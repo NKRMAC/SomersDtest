@@ -64,12 +64,12 @@ print(f"Manual Somers' D: {manual_somers_d(df['x_group'], df['y_group'])}")
 print("And now with binary target")
 
 # Calculate Somers' D on binary target
-binary_somers_d = somersd(df['x'], df['y_binarized'])
+binary_somers_d = somersd(df['x_group'], df['y_binarized'])
 print(f"Somers' D on binary target: {binary_somers_d.statistic}")
-print(f"Manual Somers' D: {manual_somers_d(df['x'], df['y_binarized'])}")
+print(f"Manual Somers' D: {manual_somers_d(df['x_group'], df['y_binarized'])}")
 
 print("Reversing the polarity...")
-binary_somers_d = somersd(df['y_binarized'], df['x'])
+binary_somers_d = somersd(df['y_binarized'], df['x_group'])
 print(f"Somers' D on binary target: {binary_somers_d.statistic}")
-print(f"Manual Somers' D: {manual_somers_d(df['y_binarized'], df['x'])}")
+print(f"Manual Somers' D: {manual_somers_d(df['y_binarized'], df['x_group'])}")
 
