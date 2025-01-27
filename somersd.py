@@ -4,6 +4,30 @@ from scipy.stats import somersd
 
 gen = False
 
+def manual_somers_d(x, y):
+    # Initialize counts
+    C = 0
+    D = 0
+    T_Y = 0
+
+    # Calculate concordant, discordant pairs and ties in X and Y
+    for i in range(len(x)):
+        for j in range(i + 1, len(x)):
+            if x[i] < x[j] and y[i] < y[j]:
+                C += 1
+            elif x[i] > x[j] and y[i] > y[j]:
+                C += 1
+            elif x[i] < x[j] and y[i] > y[j]:
+                D += 1
+            elif x[i] > x[j] and y[i] < y[j]:
+                D += 1
+            elif y[i] == y[j] and x[i] != x[j]:
+                T_Y += 1
+
+    # Calculate Somers' D
+    return (C - D) / (C + D + T_Y)
+
+
 if gen:
     # Generate data
     np.random.seed(0)
@@ -24,6 +48,7 @@ if gen:
     # Group x and y
     df['x_group'] = pd.cut(df['x'], bins=bins, labels=labels, include_lowest=True).cat.codes
     df['y_group'] = pd.cut(df['y'], bins=bins, labels=labels, include_lowest=True).cat.codes
+    df['y_binarized'] = pd.cut(df['y'], bins=[0, 0.6, 1.1], labels=[0, 1], include_lowest=True).cat.codes
 
     # Save DataFrame to CSV
     df.to_csv('somersd.csv', index=False)
@@ -34,31 +59,17 @@ else:
 # Calculate Somers' D on grouped data
 grouped_somers_d = somersd(df['x_group'], df['y_group'])
 print(f"Somers' D on grouped data: {grouped_somers_d.statistic}")
+print(f"Manual Somers' D: {manual_somers_d(df['x_group'], df['y_group'])}")
 
-# Convert to codes
-x = df['x_group']
-y = df['y_group']
+print("And now with binary target")
 
-# Initialize counts
-C = 0
-D = 0
-T_Y = 0
+# Calculate Somers' D on binary target
+binary_somers_d = somersd(df['x'], df['y_binarized'])
+print(f"Somers' D on binary target: {binary_somers_d.statistic}")
+print(f"Manual Somers' D: {manual_somers_d(df['x'], df['y_binarized'])}")
 
-# Calculate concordant, discordant pairs and ties in X and Y
-for i in range(len(x)):
-    for j in range(i + 1, len(x)):
-        if x[i] < x[j] and y[i] < y[j]:
-            C += 1
-        elif x[i] > x[j] and y[i] > y[j]:
-            C += 1
-        elif x[i] < x[j] and y[i] > y[j]:
-            D += 1
-        elif x[i] > x[j] and y[i] < y[j]:
-            D += 1
-        elif y[i] == y[j] and x[i] != x[j]:
-            T_Y += 1
+print("Reversing the polarity...")
+binary_somers_d = somersd(df['y_binarized'], df['x'])
+print(f"Somers' D on binary target: {binary_somers_d.statistic}")
+print(f"Manual Somers' D: {manual_somers_d(df['y_binarized'], df['x'])}")
 
-
-# Calculate Somers' D
-somers_d = (C - D) / (C + D + T_Y)
-print(f"Manual Somers' D: {somers_d}")

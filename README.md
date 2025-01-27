@@ -9,3 +9,14 @@ Data grupperes og køres igennem både `scipy.stats.somersd` og en manuel beregn
 Somers' D on grouped data: 0.3605724332358525
 Manual Somers' D: 0.3605724332358525
 ```
+
+Der defineres også et binary target (`y_binarized`), og Somers' D beregnes for rangordningsevnen af `x` for dette target. Jeg får:
+```
+Somers' D on binary target: 0.21354554554554556
+Manual Somers' D: 0.21354554554554556
+```
+for samme syntaks som før (`scipy.stats.somersd(x,y)`) og manuel beregning. Hvis jeg i stedet vender syntaksen som vi snakkede om var en mulighed, får jeg i stedet:
+```
+Somers' D on binary target: 0.5118723126535627
+Manual Somers' D: 0.5118723126535627
+```
